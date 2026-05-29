@@ -23,279 +23,94 @@
   }
 
   :root {
-    --bg-deep:   #130722;
-    --bg-mid:    #1d0d33;
-    --bg-edge:   #0d0418;
-    --ink:       #ffffff;
-    --ink-soft:  #e8def5;
-    --accent:    #b98bff;
-    --line:      rgba(185,139,255,0.22);
-    --font: 'GothicLocal', 'MS Gothic', 'MS PGothic', 'Noto Sans JP', monospace;
+    --bg-deep:#130722; --bg-mid:#1d0d33; --bg-edge:#0d0418;
+    --ink:#ffffff; --ink-soft:#e8def5; --accent:#b98bff;
+    --line:rgba(185,139,255,0.22);
+    --font:'GothicLocal','MS Gothic','MS PGothic','Noto Sans JP',monospace;
     --outline:
-      -1px -1px 0 #000, 1px -1px 0 #000,
-      -1px  1px 0 #000, 1px  1px 0 #000,
-       0   -1px 0 #000, 0    1px 0 #000,
-      -1px  0   0 #000, 1px  0   0 #000;
+      -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,
+       0 -1px 0 #000,0 1px 0 #000,-1px 0 0 #000,1px 0 0 #000;
   }
-
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body {
-    margin: 0; padding: 0;
-    width: 100%; height: 100%;
-    overflow: hidden;
-    background: var(--bg-deep);
-    color: var(--ink);
-    font-family: var(--font);
-    -webkit-user-select: none; user-select: none;
-    overscroll-behavior: none;
+    margin:0; padding:0; width:100%; height:100%; overflow:hidden;
+    background:var(--bg-deep); color:var(--ink); font-family:var(--font);
+    -webkit-user-select:none; user-select:none; overscroll-behavior:none;
   }
-
-  body {
-    background:
-      radial-gradient(120% 90% at 50% 0%, var(--bg-mid) 0%, var(--bg-deep) 55%, var(--bg-edge) 100%);
-  }
+  body { background:radial-gradient(120% 90% at 50% 0%,var(--bg-mid) 0%,var(--bg-deep) 55%,var(--bg-edge) 100%); }
 
   /* ---------- Library ---------- */
-  #library {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    padding: env(safe-area-inset-top) 0 0 0;
-  }
-  #library.hidden { display: none; }
+  #library { position:absolute; inset:0; display:flex; flex-direction:column; padding:env(safe-area-inset-top) 0 0 0; }
+  #library.hidden { display:none; }
+  .lib-head { padding:26px 22px 14px; border-bottom:1px solid var(--line); }
+  .lib-head-row { display:flex; align-items:center; }
+  .lib-title { flex:1; font-size:30px; font-weight:bold; letter-spacing:0.04em; text-shadow:var(--outline); }
+  .lib-sub { margin-top:6px; font-size:13px; color:var(--ink-soft); text-shadow:var(--outline); opacity:0.85; }
+  .iconbtn { background:none; border:none; color:var(--ink); font-size:22px; line-height:1; padding:6px 4px; text-shadow:var(--outline); font-family:var(--font); }
+  .iconbtn:active { color:var(--accent); }
+  .lib-actions { display:flex; gap:10px; flex-wrap:wrap; padding:12px 22px 4px; }
+  .chip { display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border:1px solid var(--accent); border-radius:999px; background:rgba(185,139,255,0.10); color:var(--ink); font-family:var(--font); font-size:14px; text-shadow:var(--outline); }
+  .chip:active { background:rgba(185,139,255,0.24); }
+  .chip.ghost { border-color:var(--line); background:none; }
 
-  .lib-head {
-    padding: 26px 22px 14px;
-    border-bottom: 1px solid var(--line);
-  }
-  .lib-head-row { display: flex; align-items: center; }
-  .lib-title {
-    flex: 1;
-    font-size: 30px; font-weight: bold;
-    letter-spacing: 0.04em;
-    text-shadow: var(--outline);
-  }
-  .lib-sub {
-    margin-top: 6px;
-    font-size: 13px; color: var(--ink-soft);
-    text-shadow: var(--outline);
-    opacity: 0.85;
-  }
-  .iconbtn {
-    background: none; border: none;
-    color: var(--ink);
-    font-size: 22px; line-height: 1;
-    padding: 6px 4px;
-    text-shadow: var(--outline);
-    font-family: var(--font);
-  }
-  .iconbtn:active { color: var(--accent); }
+  #file-list { flex:1; overflow-y:auto; padding:6px 0 40px; -webkit-overflow-scrolling:touch; }
 
-  .lib-actions {
-    display: flex; gap: 10px; flex-wrap: wrap;
-    padding: 12px 22px 4px;
-  }
-  .chip {
-    display: inline-flex; align-items: center; gap: 7px;
-    padding: 9px 16px;
-    border: 1px solid var(--accent);
-    border-radius: 999px;
-    background: rgba(185,139,255,0.10);
-    color: var(--ink);
-    font-family: var(--font);
-    font-size: 14px;
-    text-shadow: var(--outline);
-  }
-  .chip:active { background: rgba(185,139,255,0.24); }
-  .chip.ghost { border-color: var(--line); background: none; }
+  .backrow { padding:14px 22px; border-bottom:1px solid var(--line); color:var(--accent); font-size:14px; text-shadow:var(--outline); }
+  .backrow:active { background:rgba(185,139,255,0.12); }
 
-  #file-list {
-    flex: 1; overflow-y: auto;
-    padding: 12px 14px 40px;
-    -webkit-overflow-scrolling: touch;
+  .author { display:flex; align-items:center; gap:14px; padding:12px 18px; border-bottom:1px solid var(--line); }
+  .author:active { background:rgba(185,139,255,0.12); }
+  .cover {
+    width:56px; height:56px; flex:0 0 auto; border-radius:11px; overflow:hidden;
+    background:rgba(185,139,255,0.12); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--accent); font-size:22px; text-shadow:var(--outline);
   }
-  .file {
-    padding: 16px 14px;
-    border-bottom: 1px solid var(--line);
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .file:active { background: rgba(185,139,255,0.12); }
-  .file .name {
-    font-size: 17px; color: var(--ink);
-    text-shadow: var(--outline);
-    word-break: break-word;
-  }
-  .file .path {
-    font-size: 11px; color: var(--accent);
-    opacity: 0.8; text-shadow: var(--outline);
-    word-break: break-all;
-  }
-  .empty {
-    padding: 40px 26px; text-align: center;
-    color: var(--ink-soft); opacity: 0.78;
-    font-size: 14px; line-height: 1.75;
-    text-shadow: var(--outline);
-  }
-  .empty a { color: var(--accent); }
+  .cover img { width:100%; height:100%; object-fit:cover; display:block; }
+  .author .meta { flex:1; min-width:0; }
+  .author .aname { font-size:17px; text-shadow:var(--outline); word-break:break-word; }
+  .author .acount { font-size:11px; color:var(--accent); opacity:0.8; text-shadow:var(--outline); margin-top:2px; }
+  .author .chev { color:var(--ink-soft); opacity:0.5; font-size:20px; }
 
-  /* ---------- Settings overlay ---------- */
-  .overlay {
-    position: absolute; inset: 0;
-    background: rgba(7,3,14,0.72);
-    display: flex; align-items: center; justify-content: center;
-    padding: 22px;
-    z-index: 20;
-  }
-  .overlay.hidden { display: none; }
-  .panel {
-    width: 100%; max-width: 420px;
-    background: var(--bg-mid);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 20px 18px 18px;
-    max-height: 88vh; overflow-y: auto;
-  }
-  .panel-title {
-    font-size: 18px; font-weight: bold;
-    text-shadow: var(--outline);
-    margin-bottom: 14px;
-  }
-  .fld {
-    display: block;
-    font-size: 12px; color: var(--ink-soft);
-    text-shadow: var(--outline);
-    margin-bottom: 12px;
-  }
-  .fld input {
-    display: block; width: 100%;
-    margin-top: 5px;
-    padding: 10px 12px;
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    background: rgba(0,0,0,0.32);
-    color: var(--ink);
-    font-family: var(--font);
-    font-size: 15px;
-    -webkit-user-select: text; user-select: text;
-  }
-  .fld input:focus { outline: none; border-color: var(--accent); }
-  .hint {
-    font-size: 11px; line-height: 1.6;
-    color: var(--ink-soft); opacity: 0.7;
-    text-shadow: var(--outline);
-    margin: -4px 0 14px;
-  }
-  .panel-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .file { padding:15px 22px; border-bottom:1px solid var(--line); }
+  .file:active { background:rgba(185,139,255,0.12); }
+  .file .name { font-size:16px; color:var(--ink); text-shadow:var(--outline); word-break:break-word; }
+
+  .empty { padding:40px 26px; text-align:center; color:var(--ink-soft); opacity:0.78; font-size:14px; line-height:1.75; text-shadow:var(--outline); }
+  .empty code { background:rgba(185,139,255,0.16); padding:0.05em 0.3em; border-radius:4px; }
+
+  /* ---------- Settings ---------- */
+  .overlay { position:absolute; inset:0; background:rgba(7,3,14,0.72); display:flex; align-items:center; justify-content:center; padding:22px; z-index:20; }
+  .overlay.hidden { display:none; }
+  .panel { width:100%; max-width:420px; background:var(--bg-mid); border:1px solid var(--line); border-radius:16px; padding:20px 18px 18px; max-height:88vh; overflow-y:auto; }
+  .panel-title { font-size:18px; font-weight:bold; text-shadow:var(--outline); margin-bottom:14px; }
+  .fld { display:block; font-size:12px; color:var(--ink-soft); text-shadow:var(--outline); margin-bottom:12px; }
+  .fld input { display:block; width:100%; margin-top:5px; padding:10px 12px; border:1px solid var(--line); border-radius:9px; background:rgba(0,0,0,0.32); color:var(--ink); font-family:var(--font); font-size:15px; -webkit-user-select:text; user-select:text; }
+  .fld input:focus { outline:none; border-color:var(--accent); }
+  .hint { font-size:11px; line-height:1.6; color:var(--ink-soft); opacity:0.7; text-shadow:var(--outline); margin:-4px 0 14px; }
+  .panel-actions { display:flex; gap:10px; justify-content:flex-end; }
 
   /* ---------- Reader ---------- */
-  #reader {
-    position: absolute; inset: 0;
-    display: none;
-    overflow: hidden;
-    touch-action: none;
-  }
-  #reader.active { display: block; }
-
-  #book {
-    position: absolute;
-    left: 0;
-    column-fill: auto;
-    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
-    will-change: transform;
-  }
-
-  #book h1, #book h2, #book h3, #book h4, #book h5, #book h6 {
-    margin: 0.2em 0 0.5em;
-    line-height: 1.25;
-    text-shadow: var(--outline);
-    color: var(--ink);
-    break-inside: avoid;
-  }
-  #book h1 { font-size: 1.55em; }
-  #book h2 { font-size: 1.32em; }
-  #book h3 { font-size: 1.16em; color: var(--ink-soft); }
-  #book h4, #book h5, #book h6 { font-size: 1.04em; color: var(--ink-soft); }
-
-  #book p {
-    margin: 0 0 0.95em;
-    font-size: 16px;
-    line-height: 1.72;
-    text-shadow: var(--outline);
-    text-align: left;
-    orphans: 2; widows: 2;
-  }
-  #book ul, #book ol { margin: 0 0 0.95em; padding-left: 1.4em; }
-  #book li {
-    font-size: 16px; line-height: 1.7;
-    margin-bottom: 0.3em;
-    text-shadow: var(--outline);
-  }
-  #book a { color: var(--accent); text-decoration: underline; }
-  #book strong { font-weight: bold; }
-  #book em { font-style: italic; }
-  #book code {
-    font-family: var(--font);
-    background: rgba(185,139,255,0.14);
-    padding: 0.05em 0.35em; border-radius: 4px;
-    font-size: 0.92em;
-  }
-  #book pre {
-    background: rgba(0,0,0,0.35);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 12px 14px;
-    overflow: hidden;
-    margin: 0 0 0.95em;
-    break-inside: avoid;
-  }
-  #book pre code {
-    background: none; padding: 0;
-    font-size: 13px; line-height: 1.55;
-    text-shadow: none; white-space: pre-wrap; word-break: break-word;
-  }
-  #book blockquote {
-    margin: 0 0 0.95em; padding: 0.1em 0 0.1em 1em;
-    border-left: 3px solid var(--accent);
-    color: var(--ink-soft);
-  }
-  #book hr {
-    border: none; height: 1px;
-    background: var(--line);
-    margin: 1.2em 0;
-  }
-
-  #topbar {
-    position: absolute; top: 0; left: 0; right: 0;
-    height: calc(38px + env(safe-area-inset-top));
-    padding-top: env(safe-area-inset-top);
-    display: flex; align-items: center;
-    padding-left: 14px; padding-right: 14px;
-    z-index: 5;
-    pointer-events: none;
-  }
-  #back {
-    pointer-events: auto;
-    font-size: 22px; line-height: 1;
-    padding: 6px 12px 8px 8px;
-    color: var(--ink);
-    text-shadow: var(--outline);
-  }
-  #back:active { color: var(--accent); }
-  #doc-title {
-    flex: 1; text-align: center;
-    font-size: 12px; color: var(--ink-soft);
-    opacity: 0.8; text-shadow: var(--outline);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    padding: 0 6px;
-  }
-  #pageno {
-    position: absolute; left: 0; right: 0;
-    bottom: calc(8px + env(safe-area-inset-bottom));
-    text-align: center;
-    font-size: 11px; color: var(--ink-soft);
-    opacity: 0.7; text-shadow: var(--outline);
-    z-index: 5; pointer-events: none;
-  }
+  #reader { position:absolute; inset:0; display:none; overflow:hidden; touch-action:none; }
+  #reader.active { display:block; }
+  #book { position:absolute; left:0; column-fill:auto; transition:transform 0.28s cubic-bezier(.4,0,.2,1); will-change:transform; }
+  #book h1,#book h2,#book h3,#book h4,#book h5,#book h6 { margin:0.2em 0 0.5em; line-height:1.25; text-shadow:var(--outline); color:var(--ink); break-inside:avoid; }
+  #book h1{font-size:1.55em;} #book h2{font-size:1.32em;} #book h3{font-size:1.16em;color:var(--ink-soft);} #book h4,#book h5,#book h6{font-size:1.04em;color:var(--ink-soft);}
+  #book p { margin:0 0 0.95em; font-size:16px; line-height:1.72; text-shadow:var(--outline); text-align:left; orphans:2; widows:2; }
+  #book ul,#book ol { margin:0 0 0.95em; padding-left:1.4em; }
+  #book li { font-size:16px; line-height:1.7; margin-bottom:0.3em; text-shadow:var(--outline); }
+  #book a { color:var(--accent); text-decoration:underline; }
+  #book strong { font-weight:bold; } #book em { font-style:italic; }
+  #book code { font-family:var(--font); background:rgba(185,139,255,0.14); padding:0.05em 0.35em; border-radius:4px; font-size:0.92em; }
+  #book pre { background:rgba(0,0,0,0.35); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow:hidden; margin:0 0 0.95em; break-inside:avoid; }
+  #book pre code { background:none; padding:0; font-size:13px; line-height:1.55; text-shadow:none; white-space:pre-wrap; word-break:break-word; }
+  #book blockquote { margin:0 0 0.95em; padding:0.1em 0 0.1em 1em; border-left:3px solid var(--accent); color:var(--ink-soft); }
+  #book hr { border:none; height:1px; background:var(--line); margin:1.2em 0; }
+  #topbar { position:absolute; top:0; left:0; right:0; height:calc(38px + env(safe-area-inset-top)); padding-top:env(safe-area-inset-top); display:flex; align-items:center; padding-left:14px; padding-right:14px; z-index:5; pointer-events:none; }
+  #back { pointer-events:auto; font-size:22px; line-height:1; padding:6px 12px 8px 8px; color:var(--ink); text-shadow:var(--outline); }
+  #back:active { color:var(--accent); }
+  #doc-title { flex:1; text-align:center; font-size:12px; color:var(--ink-soft); opacity:0.8; text-shadow:var(--outline); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 6px; }
+  #pageno { position:absolute; left:0; right:0; bottom:calc(8px + env(safe-area-inset-bottom)); text-align:center; font-size:11px; color:var(--ink-soft); opacity:0.7; text-shadow:var(--outline); z-index:5; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -313,9 +128,7 @@
       <label class="chip ghost" for="picker">📂&nbsp;Local folder</label>
       <input type="file" id="picker" webkitdirectory directory multiple style="display:none">
     </div>
-    <div id="file-list">
-      <div class="empty" id="empty">…</div>
-    </div>
+    <div id="file-list"><div class="empty" id="empty">…</div></div>
   </div>
 
   <div id="settings" class="overlay hidden">
@@ -325,7 +138,7 @@
       <label class="fld">Repository<input id="s-repo" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
       <label class="fld">Branch<input id="s-branch" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
       <label class="fld">Access token<input id="s-token" type="password" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
-      <div class="hint">Fine-grained token with read-only Contents access to the private repo. It is stored only on this device and never leaves it except as a request to GitHub.</div>
+      <div class="hint">Fine-grained token with read-only Contents access to the private repo. Stored only on this device.</div>
       <div class="panel-actions">
         <button class="chip ghost" id="s-cancel">Cancel</button>
         <button class="chip" id="s-save">Save</button>
@@ -334,10 +147,7 @@
   </div>
 
   <div id="reader">
-    <div id="topbar">
-      <div id="back">‹</div>
-      <div id="doc-title"></div>
-    </div>
+    <div id="topbar"><div id="back">‹</div><div id="doc-title"></div></div>
     <div id="book"></div>
     <div id="pageno"></div>
   </div>
@@ -345,309 +155,284 @@
 <script>
 (function () {
   "use strict";
-
   var $ = function (id) { return document.getElementById(id); };
-  var library = $('library'), reader = $('reader'), book = $('book');
-  var fileList = $('file-list'), emptyEl = $('empty'), libSub = $('lib-sub');
-  var docTitle = $('doc-title'), pageno = $('pageno'), backBtn = $('back');
-  var settings = $('settings'), gear = $('gear'), refreshBtn = $('refresh'), picker = $('picker');
+  var library=$('library'), reader=$('reader'), book=$('book');
+  var fileList=$('file-list'), libSub=$('lib-sub');
+  var docTitle=$('doc-title'), pageno=$('pageno'), backBtn=$('back');
+  var settings=$('settings'), gear=$('gear'), refreshBtn=$('refresh'), picker=$('picker');
 
-  var books = [];        // {name, dir, sha?, file?}
-  var page = 0, totalPages = 1, stepW = 0;
+  var page=0, totalPages=1, stepW=0;
+  var model = { order:[], groups:{}, loose:[] };
 
-  // ---------- Config ----------
-  var CFG_KEY = 'monasterium.cfg';
-  var LIST_KEY = 'monasterium.books';
+  var CFG_KEY='monasterium.cfg', LIST_KEY='monasterium.tree', BOOKS='monasterium-books';
   var cfg = loadCfg();
 
-  function loadCfg() {
-    var d = { owner: 'lilua2012', repo: 'monasterium-library', branch: 'main', token: '' };
-    try {
-      var raw = localStorage.getItem(CFG_KEY);
-      if (raw) { var o = JSON.parse(raw); for (var k in o) d[k] = o[k]; }
-    } catch (e) {}
+  function loadCfg(){
+    var d={owner:'lilua2012',repo:'monasterium-library',branch:'main',token:''};
+    try { var raw=localStorage.getItem(CFG_KEY); if(raw){var o=JSON.parse(raw); for(var k in o) d[k]=o[k];} } catch(e){}
     return d;
   }
-  function saveCfg() { try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch (e) {} }
+  function saveCfg(){ try{ localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }catch(e){} }
+  function apiBase(){ return 'https://api.github.com/repos/'+cfg.owner+'/'+cfg.repo; }
+  function jsonHeaders(){ var h={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}; if(cfg.token) h['Authorization']='Bearer '+cfg.token; return h; }
+  function rawHeaders(){ var h={'Accept':'application/vnd.github.raw','X-GitHub-Api-Version':'2022-11-28'}; if(cfg.token) h['Authorization']='Bearer '+cfg.token; return h; }
 
-  function apiBase() { return 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo; }
-  function jsonHeaders() {
-    var h = { 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
-    if (cfg.token) h['Authorization'] = 'Bearer ' + cfg.token;
-    return h;
-  }
-  function rawHeaders() {
-    var h = { 'Accept': 'application/vnd.github.raw+json', 'X-GitHub-Api-Version': '2022-11-28' };
-    if (cfg.token) h['Authorization'] = 'Bearer ' + cfg.token;
-    return h;
-  }
-
-  // ---------- Markdown -> HTML ----------
+  // ---------- Markdown ----------
   function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function inline(s){
-    s = esc(s);
-    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    s = s.replace(/__([^_]+)__/g, '<strong>$1</strong>');
-    s = s.replace(/(^|[^\*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
-    s = s.replace(/(^|[^_])_([^_\n]+)_/g, '$1<em>$2</em>');
-    s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>');
+    s=esc(s);
+    s=s.replace(/`([^`]+)`/g,'<code>$1</code>');
+    s=s.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+    s=s.replace(/__([^_]+)__/g,'<strong>$1</strong>');
+    s=s.replace(/(^|[^\*])\*([^*\n]+)\*/g,'$1<em>$2</em>');
+    s=s.replace(/(^|[^_])_([^_\n]+)_/g,'$1<em>$2</em>');
+    s=s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,'<a href="$2">$1</a>');
     return s;
   }
   function mdToHtml(src){
-    src = src.replace(/\r\n?/g, '\n');
-    var lines = src.split('\n'), html = '', i = 0;
-    var blockStart = /^(#{1,6}\s|```|\s*>|\s*[-*+]\s|\s*\d+\.\s)/;
-    while (i < lines.length) {
-      var line = lines[i];
-      if (/^\s*$/.test(line)) { i++; continue; }
-      if (/^\s*```/.test(line)) {
-        i++; var code = '';
-        while (i < lines.length && !/^\s*```/.test(lines[i])) { code += lines[i] + '\n'; i++; }
-        i++; html += '<pre><code>' + esc(code.replace(/\n$/,'')) + '</code></pre>'; continue;
-      }
-      var h = line.match(/^(#{1,6})\s+(.*)$/);
-      if (h) { var n = h[1].length; html += '<h'+n+'>' + inline(h[2]) + '</h'+n+'>'; i++; continue; }
-      if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) { html += '<hr>'; i++; continue; }
-      if (/^\s*>/.test(line)) {
-        var q = '';
-        while (i < lines.length && /^\s*>/.test(lines[i])) { q += lines[i].replace(/^\s*>\s?/,'') + '\n'; i++; }
-        html += '<blockquote>' + mdToHtml(q) + '</blockquote>'; continue;
-      }
-      if (/^\s*[-*+]\s+/.test(line)) {
-        html += '<ul>';
-        while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
-          html += '<li>' + inline(lines[i].replace(/^\s*[-*+]\s+/,'')) + '</li>'; i++;
-        }
-        html += '</ul>'; continue;
-      }
-      if (/^\s*\d+\.\s+/.test(line)) {
-        html += '<ol>';
-        while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
-          html += '<li>' + inline(lines[i].replace(/^\s*\d+\.\s+/,'')) + '</li>'; i++;
-        }
-        html += '</ol>'; continue;
-      }
-      var p = '';
-      while (i < lines.length && !/^\s*$/.test(lines[i]) && !blockStart.test(lines[i])) {
-        p += (p ? ' ' : '') + lines[i].trim(); i++;
-      }
-      html += '<p>' + inline(p) + '</p>';
+    src=src.replace(/\r\n?/g,'\n');
+    var lines=src.split('\n'), html='', i=0;
+    var blockStart=/^(#{1,6}\s|```|\s*>|\s*[-*+]\s|\s*\d+\.\s)/;
+    while(i<lines.length){
+      var line=lines[i];
+      if(/^\s*$/.test(line)){i++;continue;}
+      if(/^\s*```/.test(line)){ i++; var code=''; while(i<lines.length&&!/^\s*```/.test(lines[i])){code+=lines[i]+'\n';i++;} i++; html+='<pre><code>'+esc(code.replace(/\n$/,''))+'</code></pre>'; continue; }
+      var h=line.match(/^(#{1,6})\s+(.*)$/);
+      if(h){ var n=h[1].length; html+='<h'+n+'>'+inline(h[2])+'</h'+n+'>'; i++; continue; }
+      if(/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)){ html+='<hr>'; i++; continue; }
+      if(/^\s*>/.test(line)){ var q=''; while(i<lines.length&&/^\s*>/.test(lines[i])){q+=lines[i].replace(/^\s*>\s?/,'')+'\n';i++;} html+='<blockquote>'+mdToHtml(q)+'</blockquote>'; continue; }
+      if(/^\s*[-*+]\s+/.test(line)){ html+='<ul>'; while(i<lines.length&&/^\s*[-*+]\s+/.test(lines[i])){html+='<li>'+inline(lines[i].replace(/^\s*[-*+]\s+/,''))+'</li>';i++;} html+='</ul>'; continue; }
+      if(/^\s*\d+\.\s+/.test(line)){ html+='<ol>'; while(i<lines.length&&/^\s*\d+\.\s+/.test(lines[i])){html+='<li>'+inline(lines[i].replace(/^\s*\d+\.\s+/,''))+'</li>';i++;} html+='</ol>'; continue; }
+      var p=''; while(i<lines.length&&!/^\s*$/.test(lines[i])&&!blockStart.test(lines[i])){ p+=(p?' ':'')+lines[i].trim(); i++; }
+      html+='<p>'+inline(p)+'</p>';
     }
     return html;
   }
 
-  // ---------- Library: remote (GitHub) ----------
-  function basename(path){ return path.replace(/^.*\//, ''); }
-  function dirname(path){ var i = path.lastIndexOf('/'); return i < 0 ? '' : path.slice(0, i); }
-  function titleOf(path){ return basename(path).replace(/\.(md|markdown)$/i, ''); }
+  // ---------- helpers ----------
+  function basename(p){ return p.replace(/^.*\//,''); }
+  function titleOf(path){
+    var b=basename(path).replace(/\.(md|markdown|txt)$/i,'');
+    var parts=b.split('_');
+    if(parts.length>1) parts.shift();            // drop the author-prefix token
+    return parts.join(' ').replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
+  }
 
-  function setEmpty(html){ fileList.innerHTML = '<div class="empty">' + html + '</div>'; }
+  // ---------- Build model from GitHub tree ----------
+  function buildModel(tree){
+    var groups={}, order=[], loose=[];
+    var IMG=/\.(png|jpe?g|webp|gif)$/i, MD=/\.(md|markdown)$/i;
+    tree.forEach(function(e){
+      if(e.type!=='blob' || e.path.indexOf('books/')!==0) return;
+      var rel=e.path.slice(6), slash=rel.indexOf('/');
+      if(slash<0){
+        if(MD.test(rel) && rel.toLowerCase()!=='readme.md') loose.push({sha:e.sha, path:e.path, name:titleOf(e.path)});
+        return;
+      }
+      var author=rel.slice(0,slash);
+      if(!groups[author]){ groups[author]={name:author, cover:null, works:[]}; order.push(author); }
+      if(MD.test(rel) && basename(rel).toLowerCase()!=='readme.md'){
+        groups[author].works.push({sha:e.sha, path:e.path, name:titleOf(e.path)});
+      } else if(IMG.test(rel)){
+        var pref = basename(rel).toLowerCase().indexOf('cover')===0;
+        if(!groups[author].cover || pref) groups[author].cover={sha:e.sha, path:e.path};
+      }
+    });
+    order.sort(function(a,b){return a.localeCompare(b);});
+    Object.keys(groups).forEach(function(k){ groups[k].works.sort(function(a,b){return a.path.localeCompare(b.path);}); });
+    loose.sort(function(a,b){return a.path.localeCompare(b.path);});
+    return { order:order, groups:groups, loose:loose };
+  }
 
   function loadLibrary(){
-    if (!cfg.token) {
-      libSub.textContent = 'Not configured.';
-      setEmpty('No access token yet.<br>Tap the ⚙ gear to enter your repository and token.');
-      return;
-    }
-    libSub.textContent = 'Loading from ' + cfg.owner + '/' + cfg.repo + '…';
-    setEmpty('Loading…');
-    fetch(apiBase() + '/git/trees/' + encodeURIComponent(cfg.branch) + '?recursive=1', { headers: jsonHeaders() })
-      .then(function (r) {
-        if (r.status === 401) throw new Error('Token rejected (401). Check the token value.');
-        if (r.status === 403) throw new Error('Access forbidden (403). Check the token’s repo permissions.');
-        if (r.status === 404) throw new Error('Repo or branch not found (404). Check owner / repo / branch.');
-        if (!r.ok) throw new Error('GitHub error ' + r.status + '.');
+    if(!cfg.token){ libSub.textContent='Not configured.'; setEmpty('No access token yet.<br>Tap the ⚙ gear to enter your repository and token.'); return; }
+    libSub.textContent='Loading…'; setEmpty('Loading…');
+    fetch(apiBase()+'/git/trees/'+encodeURIComponent(cfg.branch)+'?recursive=1',{headers:jsonHeaders()})
+      .then(function(r){
+        if(r.status===401) throw new Error('Token rejected (401). Check the token value.');
+        if(r.status===403) throw new Error('Access forbidden (403). Check the token’s permissions.');
+        if(r.status===404) throw new Error('Repo or branch not found (404), or the token has no access to it.');
+        if(!r.ok) throw new Error('GitHub error '+r.status+'.');
         return r.json();
       })
-      .then(function (data) {
-        var tree = (data && data.tree) || [];
-        books = tree
-          .filter(function (e) {
-            return e.type === 'blob' && /\.(md|markdown)$/i.test(e.path) &&
-                   basename(e.path).toLowerCase() !== 'readme.md';
-          })
-          .map(function (e) { return { name: titleOf(e.path), dir: dirname(e.path), sha: e.sha, path: e.path }; })
-          .sort(function (a, b) { return a.path.localeCompare(b.path); });
-        try { localStorage.setItem(LIST_KEY, JSON.stringify(books)); } catch (e) {}
-        renderList();
+      .then(function(data){
+        var tree=(data&&data.tree)||[];
+        model=buildModel(tree);
+        try{ localStorage.setItem(LIST_KEY, JSON.stringify(tree)); }catch(e){}
+        renderAuthors();
       })
-      .catch(function (err) {
-        var cached = null;
-        try { cached = JSON.parse(localStorage.getItem(LIST_KEY) || 'null'); } catch (e) {}
-        if (cached && cached.length) {
-          books = cached;
-          libSub.textContent = 'Offline — showing saved list.';
-          renderList();
-        } else {
-          libSub.textContent = 'Could not load.';
-          setEmpty(esc(err.message || 'Failed to load library.') + '<br><br>Tap ⚙ to review settings.');
-        }
+      .catch(function(err){
+        var cached=null; try{ cached=JSON.parse(localStorage.getItem(LIST_KEY)||'null'); }catch(e){}
+        if(cached){ model=buildModel(cached); libSub.textContent='Offline — saved library.'; renderAuthors(); }
+        else { libSub.textContent='Could not load.'; setEmpty(esc(err.message||'Failed to load.')+'<br><br>Tap ⚙ to review settings.'); }
       });
   }
 
-  function renderList(){
-    if (!books.length) {
-      libSub.textContent = cfg.token ? ('Empty library in ' + cfg.repo + '.') : 'Your library.';
-      setEmpty('No markdown files found.<br>Add <code>.md</code> files to the <b>books/</b> folder of the repo and push.');
+  function setEmpty(html){ fileList.innerHTML='<div class="empty">'+html+'</div>'; }
+
+  // ---------- Author images ----------
+  function getImageURL(sha){
+    function toURL(blob){ return URL.createObjectURL(blob); }
+    function net(){
+      return fetch(apiBase()+'/git/blobs/'+sha,{headers:rawHeaders()})
+        .then(function(r){ if(!r.ok) throw new Error('img'); return r.blob(); });
+    }
+    if(!('caches' in window)) return net().then(toURL);
+    return caches.open(BOOKS).then(function(c){
+      return c.match('img/'+sha).then(function(hit){
+        if(hit) return hit.blob().then(toURL);
+        return net().then(function(blob){ try{ c.put('img/'+sha,new Response(blob)); }catch(e){} return toURL(blob); });
+      });
+    });
+  }
+
+  // ---------- Render: authors ----------
+  function renderAuthors(){
+    var nAuthors=model.order.length, nLoose=model.loose.length;
+    if(!nAuthors && !nLoose){
+      libSub.textContent=cfg.token?'Empty library.':'Your library.';
+      setEmpty('No documents found.<br>Add <code>.md</code> files under <b>books/&lt;author&gt;/</b> and push, then tap Refresh.');
       return;
     }
-    libSub.textContent = books.length + (books.length === 1 ? ' document.' : ' documents.');
-    fileList.innerHTML = '';
-    books.forEach(function (b, idx) {
-      var div = document.createElement('div');
-      div.className = 'file';
-      var sub = (b.dir || '').replace(/^books\/?/, '');
-      div.innerHTML = '<div class="name">' + esc(b.name) + '</div>' +
-                      (sub ? '<div class="path">' + esc(sub) + '</div>' : '');
-      div.addEventListener('click', function () { open(idx); });
-      fileList.appendChild(div);
+    libSub.textContent = nAuthors + (nAuthors===1?' author':' authors');
+    fileList.innerHTML='';
+    model.loose.forEach(function(w){ fileList.appendChild(fileRow(w)); });
+    model.order.forEach(function(name){
+      var g=model.groups[name];
+      var row=document.createElement('div'); row.className='author';
+      var cov=document.createElement('div'); cov.className='cover'; cov.textContent=(name[0]||'?').toUpperCase();
+      var meta=document.createElement('div'); meta.className='meta';
+      meta.innerHTML='<div class="aname">'+esc(name)+'</div><div class="acount">'+g.works.length+(g.works.length===1?' work':' works')+'</div>';
+      var chev=document.createElement('div'); chev.className='chev'; chev.textContent='›';
+      row.appendChild(cov); row.appendChild(meta); row.appendChild(chev);
+      row.addEventListener('click', function(){ renderWorks(name); });
+      fileList.appendChild(row);
+      if(g.cover){ getImageURL(g.cover.sha).then(function(url){ var im=new Image(); im.onload=function(){ cov.textContent=''; cov.appendChild(im); }; im.src=url; }).catch(function(){}); }
     });
+    fileList.scrollTop=0;
   }
 
-  // fetch text for a book: local File, or remote blob (cached by content sha)
-  function getText(b){
-    if (b.file) return b.file.text();
-    var key = 'book/' + b.sha;
-    if (!('caches' in window)) return fetchBlob(b.sha);
-    return caches.open('monasterium-books').then(function (cache) {
-      return cache.match(key).then(function (hit) {
-        if (hit) return hit.text();
-        return fetchBlob(b.sha).then(function (text) {
-          try { cache.put(key, new Response(text)); } catch (e) {}
-          return text;
-        });
-      });
-    });
+  function fileRow(w){
+    var div=document.createElement('div'); div.className='file';
+    div.innerHTML='<div class="name">'+esc(w.name)+'</div>';
+    div.addEventListener('click', function(){ openWork(w); });
+    return div;
   }
-  function fetchBlob(sha){
-    return fetch(apiBase() + '/git/blobs/' + sha, { headers: rawHeaders() })
-      .then(function (r) {
-        if (!r.ok) throw new Error('Could not fetch document (' + r.status + ').');
-        return r.text();
-      });
+
+  // ---------- Render: works of one author ----------
+  function renderWorks(name){
+    var g=model.groups[name]; if(!g) return;
+    libSub.textContent=name+' — '+g.works.length+(g.works.length===1?' work':' works');
+    fileList.innerHTML='';
+    var back=document.createElement('div'); back.className='backrow'; back.textContent='‹ All authors';
+    back.addEventListener('click', renderAuthors);
+    fileList.appendChild(back);
+    g.works.forEach(function(w){ fileList.appendChild(fileRow(w)); });
+    fileList.scrollTop=0;
   }
 
   // ---------- Local folder fallback ----------
-  picker.addEventListener('change', function (e) {
-    var picked = Array.prototype.slice.call(e.target.files || []);
-    books = picked
-      .filter(function (f) { return /\.(md|markdown|txt)$/i.test(f.name); })
-      .map(function (f) {
-        var path = f.webkitRelativePath || f.name;
-        return { name: titleOf(path).replace(/\.txt$/i,''), dir: dirname(path), file: f, path: path };
-      })
-      .sort(function (a, b) { return a.path.localeCompare(b.path); });
-    libSub.textContent = 'Local folder — ' + books.length + ' files.';
-    renderList();
+  picker.addEventListener('change', function(e){
+    var picked=Array.prototype.slice.call(e.target.files||[]);
+    var works=picked.filter(function(f){return /\.(md|markdown|txt)$/i.test(f.name);})
+      .map(function(f){ var path=f.webkitRelativePath||f.name; return {file:f, path:path, name:titleOf(path)}; })
+      .sort(function(a,b){return a.path.localeCompare(b.path);});
+    libSub.textContent='Local folder — '+works.length+' files';
+    fileList.innerHTML='';
+    var back=document.createElement('div'); back.className='backrow'; back.textContent='‹ Library';
+    back.addEventListener('click', renderAuthors);
+    fileList.appendChild(back);
+    if(!works.length) fileList.appendChild(Object.assign(document.createElement('div'),{className:'empty',textContent:'No markdown files in that folder.'}));
+    works.forEach(function(w){ fileList.appendChild(fileRow(w)); });
+    fileList.scrollTop=0;
   });
 
-  // ---------- Reader ----------
-  function open(idx){
-    var b = books[idx];
-    docTitle.textContent = b.name;
-    book.innerHTML = '';
-    library.classList.add('hidden');
-    reader.classList.add('active');
-    pageno.textContent = '…';
-    getText(b).then(function (text) {
-      book.innerHTML = mdToHtml(text);
-      page = 0;
-      paginate();
-      if (document.fonts && document.fonts.ready) document.fonts.ready.then(paginate);
-      setTimeout(paginate, 60);
-    }).catch(function (err) {
-      book.innerHTML = '<p>' + esc(err.message || 'Could not open this document.') + '</p>';
-      paginate();
+  // ---------- Get text for a work ----------
+  function getText(w){
+    if(w.file) return w.file.text();
+    if(!('caches' in window)) return fetchBlobText(w.sha);
+    return caches.open(BOOKS).then(function(c){
+      return c.match('book/'+w.sha).then(function(hit){
+        if(hit) return hit.text();
+        return fetchBlobText(w.sha).then(function(t){ try{ c.put('book/'+w.sha,new Response(t)); }catch(e){} return t; });
+      });
     });
   }
+  function fetchBlobText(sha){
+    return fetch(apiBase()+'/git/blobs/'+sha,{headers:rawHeaders()})
+      .then(function(r){ if(!r.ok) throw new Error('Could not fetch document ('+r.status+').'); return r.text(); });
+  }
 
+  // ---------- Reader ----------
+  function openWork(w){
+    docTitle.textContent=w.name;
+    book.innerHTML=''; pageno.textContent='…';
+    library.classList.add('hidden'); reader.classList.add('active');
+    getText(w).then(function(text){
+      book.innerHTML=mdToHtml(text);
+      page=0; paginate();
+      if(document.fonts&&document.fonts.ready) document.fonts.ready.then(paginate);
+      setTimeout(paginate,60);
+    }).catch(function(err){ book.innerHTML='<p>'+esc(err.message||'Could not open this document.')+'</p>'; paginate(); });
+  }
   function paginate(){
-    var W = window.innerWidth, H = window.innerHeight;
-    var sideM = Math.max(20, Math.round(W * 0.06)), topM = 46, botM = 40;
-    book.style.transition = 'none';
-    book.style.top = topM + 'px';
-    book.style.height = (H - topM - botM) + 'px';
-    book.style.columnWidth = (W - 2 * sideM) + 'px';
-    book.style.columnGap = (2 * sideM) + 'px';
-    book.style.paddingLeft = sideM + 'px';
-    stepW = W;
-    var sw = book.scrollWidth;
-    totalPages = Math.max(1, Math.ceil(sw / W));
-    if (page > totalPages - 1) page = totalPages - 1;
-    if (page < 0) page = 0;
+    var W=window.innerWidth,H=window.innerHeight;
+    var sideM=Math.max(20,Math.round(W*0.06)),topM=46,botM=40;
+    book.style.transition='none';
+    book.style.top=topM+'px'; book.style.height=(H-topM-botM)+'px';
+    book.style.columnWidth=(W-2*sideM)+'px'; book.style.columnGap=(2*sideM)+'px'; book.style.paddingLeft=sideM+'px';
+    stepW=W;
+    var sw=book.scrollWidth; totalPages=Math.max(1,Math.ceil(sw/W));
+    if(page>totalPages-1) page=totalPages-1; if(page<0) page=0;
     applyPage(false);
-    requestAnimationFrame(function () { book.style.transition = ''; });
+    requestAnimationFrame(function(){ book.style.transition=''; });
   }
   function applyPage(animate){
-    if (!animate) book.style.transition = 'none';
-    book.style.transform = 'translateX(' + (-page * stepW) + 'px)';
-    pageno.textContent = (page + 1) + ' / ' + totalPages;
-    if (!animate) requestAnimationFrame(function () { book.style.transition = ''; });
+    if(!animate) book.style.transition='none';
+    book.style.transform='translateX('+(-page*stepW)+'px)';
+    pageno.textContent=(page+1)+' / '+totalPages;
+    if(!animate) requestAnimationFrame(function(){ book.style.transition=''; });
   }
-  function next(){ if (page < totalPages - 1) { page++; applyPage(true); } }
-  function prev(){ if (page > 0) { page--; applyPage(true); } }
-  function closeReader(){
-    reader.classList.remove('active');
-    library.classList.remove('hidden');
-    book.innerHTML = '';
-  }
+  function next(){ if(page<totalPages-1){page++;applyPage(true);} }
+  function prev(){ if(page>0){page--;applyPage(true);} }
+  function closeReader(){ reader.classList.remove('active'); library.classList.remove('hidden'); book.innerHTML=''; }
   backBtn.addEventListener('click', closeReader);
 
   // ---------- Gestures ----------
-  var sx = 0, sy = 0;
-  reader.addEventListener('touchstart', function (e) {
-    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-  }, { passive: true });
-  reader.addEventListener('touchend', function (e) {
-    var dx = e.changedTouches[0].clientX - sx;
-    var dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) { if (dx < 0) next(); else prev(); }
-    else if (Math.abs(dx) < 12 && Math.abs(dy) < 12) { if (sx > window.innerWidth * 0.5) next(); else prev(); }
-  }, { passive: true });
-  window.addEventListener('keydown', function (e) {
-    if (!reader.classList.contains('active')) return;
-    if (e.key === 'ArrowRight' || e.key === ' ') { next(); e.preventDefault(); }
-    else if (e.key === 'ArrowLeft') { prev(); e.preventDefault(); }
-    else if (e.key === 'Escape') closeReader();
+  var sx=0,sy=0;
+  reader.addEventListener('touchstart',function(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
+  reader.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){ if(dx<0) next(); else prev(); }
+    else if(Math.abs(dx)<12&&Math.abs(dy)<12){ if(sx>window.innerWidth*0.5) next(); else prev(); }
+  },{passive:true});
+  window.addEventListener('keydown',function(e){
+    if(!reader.classList.contains('active')) return;
+    if(e.key==='ArrowRight'||e.key===' '){ next(); e.preventDefault(); }
+    else if(e.key==='ArrowLeft'){ prev(); e.preventDefault(); }
+    else if(e.key==='Escape') closeReader();
   });
-  var rt;
-  window.addEventListener('resize', function () {
-    if (!reader.classList.contains('active')) return;
-    clearTimeout(rt); rt = setTimeout(paginate, 120);
-  });
+  var rt; window.addEventListener('resize',function(){ if(!reader.classList.contains('active')) return; clearTimeout(rt); rt=setTimeout(paginate,120); });
 
   // ---------- Settings ----------
-  function openSettings(){
-    $('s-owner').value = cfg.owner || '';
-    $('s-repo').value = cfg.repo || '';
-    $('s-branch').value = cfg.branch || 'main';
-    $('s-token').value = cfg.token || '';
-    settings.classList.remove('hidden');
-  }
+  function openSettings(){ $('s-owner').value=cfg.owner||''; $('s-repo').value=cfg.repo||''; $('s-branch').value=cfg.branch||'main'; $('s-token').value=cfg.token||''; settings.classList.remove('hidden'); }
   function closeSettings(){ settings.classList.add('hidden'); }
   gear.addEventListener('click', openSettings);
   $('s-cancel').addEventListener('click', closeSettings);
-  $('s-save').addEventListener('click', function () {
-    cfg.owner = $('s-owner').value.trim();
-    cfg.repo = $('s-repo').value.trim();
-    cfg.branch = $('s-branch').value.trim() || 'main';
-    cfg.token = $('s-token').value.trim();
-    saveCfg();
-    closeSettings();
-    loadLibrary();
+  $('s-save').addEventListener('click', function(){
+    cfg.owner=$('s-owner').value.trim(); cfg.repo=$('s-repo').value.trim();
+    cfg.branch=$('s-branch').value.trim()||'main'; cfg.token=$('s-token').value.trim();
+    saveCfg(); closeSettings(); loadLibrary();
   });
   refreshBtn.addEventListener('click', loadLibrary);
 
   // ---------- Service worker ----------
-  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('sw.js').catch(function () {});
-    });
+  if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+    window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
   }
 
   // ---------- Init ----------
-  if (!cfg.token) openSettings();
+  if(!cfg.token) openSettings();
   loadLibrary();
 })();
 </script>

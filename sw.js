@@ -1,5 +1,5 @@
 /* Monasterium service worker — caches the app shell for offline use. */
-var CACHE = 'monasterium-v3';
+var CACHE = 'monasterium-v4';
 var BOOKS = 'monasterium-books';
 var ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png'];
 
