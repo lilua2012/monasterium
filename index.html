@@ -85,18 +85,19 @@
   /* ---------- Reader ---------- */
   #reader { position:absolute; inset:0; display:none; overflow:hidden; touch-action:none; }
   #reader.active { display:block; }
-  #book { position:absolute; left:0; column-fill:auto; transition:transform 0.28s cubic-bezier(.4,0,.2,1); will-change:transform; }
-  #book h1,#book h2,#book h3,#book h4,#book h5,#book h6 { margin:0.2em 0 0.5em; line-height:1.25; text-shadow:var(--outline); color:var(--ink); break-inside:avoid; }
-  #book h1{font-size:1.55em;} #book h2{font-size:1.32em;} #book h3{font-size:1.16em;color:var(--ink-soft);} #book h4,#book h5,#book h6{font-size:1.04em;color:var(--ink-soft);}
-  #book p { margin:0 0 0.95em; font-size:16px; line-height:1.72; text-shadow:var(--outline); text-align:left; orphans:2; widows:2; }
-  #book ul,#book ol { margin:0 0 0.95em; padding-left:1.4em; }
-  #book li { font-size:16px; line-height:1.7; margin-bottom:0.3em; text-shadow:var(--outline); }
+  #book { position:absolute; overflow:hidden; }
+  #page { position:relative; transform:translateY(0); transition:transform 0.26s cubic-bezier(.4,0,.2,1); will-change:transform; }
+  #book h1,#book h2,#book h3,#book h4,#book h5,#book h6 { margin:0.2em 0 0.5em; line-height:1.25; text-shadow:var(--outline); color:var(--ink); }
+  #book h1{font-size:1.5em;} #book h2{font-size:1.28em;} #book h3{font-size:1.14em;color:var(--ink-soft);} #book h4,#book h5,#book h6{font-size:1.03em;color:var(--ink-soft);}
+  #book p { margin:0 0 0.9em; font-size:16px; line-height:1.7; text-shadow:var(--outline); text-align:left; }
+  #book ul,#book ol { margin:0 0 0.9em; padding-left:1.4em; }
+  #book li { font-size:16px; line-height:1.68; margin-bottom:0.3em; text-shadow:var(--outline); }
   #book a { color:var(--accent); text-decoration:underline; }
   #book strong { font-weight:bold; } #book em { font-style:italic; }
   #book code { font-family:var(--font); background:rgba(185,139,255,0.14); padding:0.05em 0.35em; border-radius:4px; font-size:0.92em; }
-  #book pre { background:rgba(0,0,0,0.35); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow:hidden; margin:0 0 0.95em; break-inside:avoid; }
+  #book pre { background:rgba(0,0,0,0.35); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow:hidden; margin:0 0 0.9em; }
   #book pre code { background:none; padding:0; font-size:13px; line-height:1.55; text-shadow:none; white-space:pre-wrap; word-break:break-word; }
-  #book blockquote { margin:0 0 0.95em; padding:0.1em 0 0.1em 1em; border-left:3px solid var(--accent); color:var(--ink-soft); }
+  #book blockquote { margin:0 0 0.9em; padding:0.1em 0 0.1em 1em; border-left:3px solid var(--accent); color:var(--ink-soft); }
   #book hr { border:none; height:1px; background:var(--line); margin:1.2em 0; }
   #book mark { background:rgba(185,139,255,0.35); color:var(--ink); border-radius:2px; }
   #book mark.cur { background:var(--accent); color:#1a0b2e; text-shadow:none; }
@@ -111,7 +112,7 @@
   #findbar.hidden { display:none; }
   #findinput { flex:1; min-width:0; padding:8px 11px; border:1px solid var(--line); border-radius:8px; background:rgba(0,0,0,0.3); color:var(--ink); font-family:var(--font); font-size:15px; -webkit-user-select:text; user-select:text; }
   #findinput:focus { outline:none; border-color:var(--accent); }
-  #findcount { font-size:12px; color:var(--ink-soft); min-width:38px; text-align:center; text-shadow:var(--outline); }
+  #findcount { font-size:12px; color:var(--ink-soft); min-width:42px; text-align:center; text-shadow:var(--outline); }
   #findbar button { background:none; border:1px solid var(--line); border-radius:8px; color:var(--ink); font-family:var(--font); font-size:16px; padding:6px 11px; text-shadow:var(--outline); }
   #findbar button:active { background:rgba(185,139,255,0.2); }
 
@@ -164,7 +165,7 @@
       <button id="findnext" aria-label="Next match">›</button>
       <button id="findclose" aria-label="Close find">✕</button>
     </div>
-    <div id="book"></div>
+    <div id="book"><div id="page"></div></div>
     <div id="pageno"></div>
   </div>
 
@@ -172,13 +173,13 @@
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
-  var library=$('library'), reader=$('reader'), book=$('book');
+  var library=$('library'), reader=$('reader'), book=$('book'), pageEl=$('page');
   var fileList=$('file-list'), libSub=$('lib-sub');
   var docTitle=$('doc-title'), pageno=$('pageno'), backBtn=$('back');
   var settings=$('settings'), gear=$('gear'), refreshBtn=$('refresh'), picker=$('picker');
   var findbtn=$('findbtn'), findbar=$('findbar'), findInput=$('findinput'), findCount=$('findcount');
 
-  var page=0, totalPages=1, stepW=0;
+  var page=0, totalPages=1, pageH=0, pageStarts=[0];
   var model = { order:[], groups:{}, loose:[] };
   var currentBaseHTML='', currentTerm='', matches=[], curMatch=-1;
 
@@ -391,40 +392,50 @@
 
   // ---------- Reader ----------
   function openWork(w, pendingTerm){
-    docTitle.textContent=w.name; book.innerHTML=''; pageno.textContent='…';
+    docTitle.textContent=w.name; pageEl.innerHTML=''; pageno.textContent='…';
     resetFind();
     library.classList.add('hidden'); reader.classList.add('active');
     getText(w).then(function(text){
-      currentBaseHTML=mdToHtml(text); book.innerHTML=currentBaseHTML;
+      currentBaseHTML=mdToHtml(text); pageEl.innerHTML=currentBaseHTML;
       page=0; paginate();
       if(document.fonts&&document.fonts.ready) document.fonts.ready.then(paginate);
       setTimeout(function(){ paginate(); if(pendingTerm) openFind(pendingTerm); }, 80);
-    }).catch(function(err){ currentBaseHTML='<p>'+esc(err.message||'Could not open this document.')+'</p>'; book.innerHTML=currentBaseHTML; paginate(); });
+    }).catch(function(err){ currentBaseHTML='<p>'+esc(err.message||'Could not open this document.')+'</p>'; pageEl.innerHTML=currentBaseHTML; page=0; paginate(); });
   }
 
+  // measure block offsets -> page start offsets (breaks at block boundaries)
+  function computePages(){
+    pageStarts=[0];
+    var H=pageH; if(H<=0){ totalPages=1; return; }
+    var kids=pageEl.children, cur=0;
+    for(var i=0;i<kids.length;i++){
+      var el=kids[i], top=el.offsetTop, bot=el.offsetTop+el.offsetHeight;
+      while(bot-cur>H){
+        if(top>cur+1){ cur=top; } else { cur=cur+H; }
+        pageStarts.push(cur);
+      }
+    }
+    totalPages=pageStarts.length;
+  }
   function paginate(){
     var W=window.innerWidth, H=window.innerHeight;
     var sideM=Math.max(20,Math.round(W*0.06)), topM=46, botM=40;
-    book.style.transition='none';
-    book.style.top=topM+'px'; book.style.height=(H-topM-botM)+'px';
-    book.style.width=W+'px';                       // definite width — the fix
-    book.style.paddingLeft=sideM+'px'; book.style.paddingRight=sideM+'px';
-    book.style.columnWidth=(W-2*sideM)+'px'; book.style.columnGap=(2*sideM)+'px';
-    stepW=W;
-    var sw=book.scrollWidth; totalPages=Math.max(1,Math.round(sw/W));
+    pageH=H-topM-botM;
+    book.style.left=sideM+'px'; book.style.width=(W-2*sideM)+'px';
+    book.style.top=topM+'px'; book.style.height=pageH+'px';
+    computePages();
     if(page>totalPages-1) page=totalPages-1; if(page<0) page=0;
     applyPage(false);
-    requestAnimationFrame(function(){ book.style.transition=''; });
   }
   function applyPage(animate){
-    if(!animate) book.style.transition='none';
-    book.style.transform='translateX('+(-page*stepW)+'px)';
+    if(!animate) pageEl.style.transition='none';
+    pageEl.style.transform='translateY('+(-(pageStarts[page]||0))+'px)';
     pageno.textContent=(page+1)+' / '+totalPages;
-    if(!animate) requestAnimationFrame(function(){ book.style.transition=''; });
+    if(!animate) requestAnimationFrame(function(){ pageEl.style.transition=''; });
   }
   function next(){ if(page<totalPages-1){page++;applyPage(true);} }
   function prev(){ if(page>0){page--;applyPage(true);} }
-  function closeReader(){ reader.classList.remove('active'); library.classList.remove('hidden'); resetFind(); book.innerHTML=''; }
+  function closeReader(){ reader.classList.remove('active'); library.classList.remove('hidden'); resetFind(); pageEl.innerHTML=''; }
   backBtn.addEventListener('click', closeReader);
 
   // ---------- In-book find ----------
@@ -447,8 +458,8 @@
   }
   function findInBook(term){
     term=(term||'').trim();
-    book.innerHTML=currentBaseHTML; matches=[]; curMatch=-1; currentTerm=term;
-    if(term){ wrapMatches(book, term); matches=Array.prototype.slice.call(book.getElementsByTagName('mark')); }
+    pageEl.innerHTML=currentBaseHTML; matches=[]; curMatch=-1; currentTerm=term;
+    if(term){ wrapMatches(pageEl, term); matches=Array.prototype.slice.call(pageEl.getElementsByTagName('mark')); }
     paginate();
     if(matches.length) gotoMatch(0); else applyPage(false);
     updateFindCount();
@@ -458,9 +469,9 @@
     curMatch=((i%matches.length)+matches.length)%matches.length;
     for(var k=0;k<matches.length;k++) matches[k].classList.remove('cur');
     var m=matches[curMatch]; m.classList.add('cur');
-    var x=m.getBoundingClientRect().left - book.getBoundingClientRect().left;  // x within book content
-    page=Math.max(0,Math.min(totalPages-1, Math.floor(x/stepW)));
-    applyPage(true);
+    var y=m.getBoundingClientRect().top - pageEl.getBoundingClientRect().top;  // layout offset within page content
+    var idx=0; for(var j=0;j<pageStarts.length;j++){ if(pageStarts[j]<=y+1) idx=j; else break; }
+    page=idx; applyPage(false);
     updateFindCount();
   }
   function updateFindCount(){ findCount.textContent = currentTerm ? (matches.length? (curMatch+1)+'/'+matches.length : '0/0') : ''; }
@@ -470,12 +481,12 @@
     else { setTimeout(function(){ findInput.focus(); }, 0); }
   }
   function resetFind(){ findbar.classList.add('hidden'); matches=[]; curMatch=-1; currentTerm=''; findInput.value=''; findCount.textContent=''; }
-  findbtn.addEventListener('click', function(){ if(findbar.classList.contains('hidden')) openFind(null); else resetFindKeepText(); });
-  function resetFindKeepText(){ // close find but keep reading position
+  function closeFindKeepPlace(){
     findbar.classList.add('hidden');
-    if(currentTerm){ var p=page; book.innerHTML=currentBaseHTML; matches=[]; curMatch=-1; currentTerm=''; paginate(); page=Math.min(p,totalPages-1); applyPage(false); }
+    if(currentTerm){ var p=page; pageEl.innerHTML=currentBaseHTML; matches=[]; curMatch=-1; currentTerm=''; findCount.textContent=''; paginate(); page=Math.min(p,totalPages-1); applyPage(false); }
   }
-  $('findclose').addEventListener('click', resetFindKeepText);
+  findbtn.addEventListener('click', function(){ if(findbar.classList.contains('hidden')) openFind(null); else closeFindKeepPlace(); });
+  $('findclose').addEventListener('click', closeFindKeepPlace);
   $('findnext').addEventListener('click', function(){ if(matches.length) gotoMatch(curMatch+1); });
   $('findprev').addEventListener('click', function(){ if(matches.length) gotoMatch(curMatch-1); });
   findInput.addEventListener('keydown', function(e){
@@ -506,9 +517,9 @@
     if(document.activeElement===findInput) return;
     if(e.key==='ArrowRight'||e.key===' '){ next(); e.preventDefault(); }
     else if(e.key==='ArrowLeft'){ prev(); e.preventDefault(); }
-    else if(e.key==='Escape'){ if(!findbar.classList.contains('hidden')) resetFindKeepText(); else closeReader(); }
+    else if(e.key==='Escape'){ if(!findbar.classList.contains('hidden')) closeFindKeepPlace(); else closeReader(); }
   });
-  var rt; window.addEventListener('resize', function(){ if(!reader.classList.contains('active')) return; clearTimeout(rt); rt=setTimeout(function(){ if(currentTerm&&matches.length){ paginate(); gotoMatch(curMatch); } else paginate(); }, 140); });
+  var rt; window.addEventListener('resize', function(){ if(!reader.classList.contains('active')) return; clearTimeout(rt); rt=setTimeout(function(){ if(currentTerm&&matches.length){ var c=curMatch; paginate(); gotoMatch(c); } else paginate(); }, 150); });
 
   // ---------- Settings ----------
   function openSettings(){ $('s-owner').value=cfg.owner||''; $('s-repo').value=cfg.repo||''; $('s-branch').value=cfg.branch||'main'; $('s-token').value=cfg.token||''; settings.classList.remove('hidden'); }
