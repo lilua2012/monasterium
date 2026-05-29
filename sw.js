@@ -1,6 +1,6 @@
 /* Monasterium service worker — caches the app shell for offline use. */
-var CACHE = 'monasterium-v1';
-var ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg'];
+var CACHE = 'monasterium-v2';
+var ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }));
