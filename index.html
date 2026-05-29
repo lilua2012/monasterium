@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Monasterium</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#130722">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Monasterium">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<style>
+  @font-face {
+    font-family: 'GothicLocal';
+    src: local('MS Gothic'), local('MS ゴシック'), local('MSGothic'), local('MS PGothic'),
+         url('msgothic.ttf') format('truetype'),
+         url('msgothic.ttc') format('truetype'),
+         url('gothic.ttf') format('truetype');
+    font-display: swap;
+  }
+
+  :root {
+    --bg-deep:   #130722;
+    --bg-mid:    #1d0d33;
+    --bg-edge:   #0d0418;
+    --ink:       #ffffff;
+    --ink-soft:  #e8def5;
+    --accent:    #b98bff;
+    --line:      rgba(185,139,255,0.22);
+    --font: 'GothicLocal', 'MS Gothic', 'MS PGothic', 'Noto Sans JP', monospace;
+    --outline:
+      -1px -1px 0 #000, 1px -1px 0 #000,
+      -1px  1px 0 #000, 1px  1px 0 #000,
+       0   -1px 0 #000, 0    1px 0 #000,
+      -1px  0   0 #000, 1px  0   0 #000;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--bg-deep);
+    color: var(--ink);
+    font-family: var(--font);
+    -webkit-user-select: none; user-select: none;
+    overscroll-behavior: none;
+  }
+
+  body {
+    background:
+      radial-gradient(120% 90% at 50% 0%, var(--bg-mid) 0%, var(--bg-deep) 55%, var(--bg-edge) 100%);
+  }
+
+  /* ---------- Library ---------- */
+  #library {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    padding: env(safe-area-inset-top) 0 0 0;
+  }
+  #library.hidden { display: none; }
+
+  .lib-head {
+    padding: 28px 26px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .lib-title {
+    font-size: 30px; font-weight: bold;
+    letter-spacing: 0.04em;
+    text-shadow: var(--outline);
+  }
+  .lib-sub {
+    margin-top: 6px;
+    font-size: 13px; color: var(--ink-soft);
+    text-shadow: var(--outline);
+    opacity: 0.85;
+  }
+
+  .choose {
+    margin: 16px 26px 6px;
+    display: inline-flex; align-items: center; gap: 10px;
+    align-self: flex-start;
+    padding: 11px 20px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: rgba(185,139,255,0.10);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 15px;
+    text-shadow: var(--outline);
+  }
+  .choose:active { background: rgba(185,139,255,0.22); }
+  #picker { display: none; }
+
+  #file-list {
+    flex: 1; overflow-y: auto;
+    padding: 10px 14px 40px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .file {
+    padding: 16px 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .file:active { background: rgba(185,139,255,0.12); }
+  .file .name {
+    font-size: 17px; color: var(--ink);
+    text-shadow: var(--outline);
+    word-break: break-word;
+  }
+  .file .path {
+    font-size: 11px; color: var(--accent);
+    opacity: 0.8; text-shadow: var(--outline);
+    word-break: break-all;
+  }
+  .empty {
+    padding: 40px 26px; text-align: center;
+    color: var(--ink-soft); opacity: 0.7;
+    font-size: 14px; line-height: 1.7;
+    text-shadow: var(--outline);
+  }
+
+  /* ---------- Reader ---------- */
+  #reader {
+    position: absolute; inset: 0;
+    display: none;
+    overflow: hidden;
+    touch-action: none;
+  }
+  #reader.active { display: block; }
+
+  #book {
+    position: absolute;
+    left: 0;
+    column-fill: auto;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+    will-change: transform;
+  }
+
+  /* content typography */
+  #book h1, #book h2, #book h3, #book h4, #book h5, #book h6 {
+    margin: 0.2em 0 0.5em;
+    line-height: 1.25;
+    text-shadow: var(--outline);
+    color: var(--ink);
+    break-inside: avoid;
+  }
+  #book h1 { font-size: 1.55em; }
+  #book h2 { font-size: 1.32em; }
+  #book h3 { font-size: 1.16em; color: var(--ink-soft); }
+  #book h4, #book h5, #book h6 { font-size: 1.04em; color: var(--ink-soft); }
+
+  #book p {
+    margin: 0 0 0.95em;
+    font-size: 16px;
+    line-height: 1.72;
+    text-shadow: var(--outline);
+    text-align: left;
+    orphans: 2; widows: 2;
+  }
+  #book ul, #book ol { margin: 0 0 0.95em; padding-left: 1.4em; }
+  #book li {
+    font-size: 16px; line-height: 1.7;
+    margin-bottom: 0.3em;
+    text-shadow: var(--outline);
+  }
+  #book a { color: var(--accent); text-decoration: underline; }
+  #book strong { font-weight: bold; }
+  #book em { font-style: italic; }
+  #book code {
+    font-family: var(--font);
+    background: rgba(185,139,255,0.14);
+    padding: 0.05em 0.35em; border-radius: 4px;
+    font-size: 0.92em;
+  }
+  #book pre {
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    overflow: hidden;
+    margin: 0 0 0.95em;
+    break-inside: avoid;
+  }
+  #book pre code {
+    background: none; padding: 0;
+    font-size: 13px; line-height: 1.55;
+    text-shadow: none; white-space: pre-wrap; word-break: break-word;
+  }
+  #book blockquote {
+    margin: 0 0 0.95em; padding: 0.1em 0 0.1em 1em;
+    border-left: 3px solid var(--accent);
+    color: var(--ink-soft);
+  }
+  #book hr {
+    border: none; height: 1px;
+    background: var(--line);
+    margin: 1.2em 0;
+  }
+
+  /* chrome over the reader */
+  #topbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: calc(38px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+    display: flex; align-items: center;
+    padding-left: 14px; padding-right: 14px;
+    z-index: 5;
+    pointer-events: none;
+  }
+  #back {
+    pointer-events: auto;
+    font-size: 22px; line-height: 1;
+    padding: 6px 12px 8px 8px;
+    color: var(--ink);
+    text-shadow: var(--outline);
+  }
+  #back:active { color: var(--accent); }
+  #doc-title {
+    flex: 1; text-align: center;
+    font-size: 12px; color: var(--ink-soft);
+    opacity: 0.8; text-shadow: var(--outline);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    padding: 0 6px;
+  }
+  #pageno {
+    position: absolute; left: 0; right: 0;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    text-align: center;
+    font-size: 11px; color: var(--ink-soft);
+    opacity: 0.7; text-shadow: var(--outline);
+    z-index: 5; pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+  <div id="library">
+    <div class="lib-head">
+      <div class="lib-title">Monasterium</div>
+      <div class="lib-sub">Choose a folder, then tap a document.</div>
+    </div>
+    <label class="choose" for="picker">⌖ &nbsp;Choose folder</label>
+    <input type="file" id="picker" webkitdirectory directory multiple accept=".md,.markdown,.txt">
+    <div id="file-list">
+      <div class="empty">No folder selected yet.<br>Tap “Choose folder” above and pick the directory that holds your markdown files.</div>
+    </div>
+  </div>
+
+  <div id="reader">
+    <div id="topbar">
+      <div id="back">‹</div>
+      <div id="doc-title"></div>
+    </div>
+    <div id="book"></div>
+    <div id="pageno"></div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  var library = document.getElementById('library');
+  var reader  = document.getElementById('reader');
+  var book    = document.getElementById('book');
+  var picker  = document.getElementById('picker');
+  var fileList= document.getElementById('file-list');
+  var docTitle= document.getElementById('doc-title');
+  var pageno  = document.getElementById('pageno');
+  var backBtn = document.getElementById('back');
+
+  var files = [];        // {file, name, path}
+  var page = 0;
+  var totalPages = 1;
+  var stepW = 0;
+  var openFile = null;
+
+  // ---------- Markdown -> HTML ----------
+  function esc(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function inline(s){
+    s = esc(s);
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+    s = s.replace(/(^|[^\*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+    s = s.replace(/(^|[^_])_([^_\n]+)_/g, '$1<em>$2</em>');
+    s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>');
+    return s;
+  }
+  function mdToHtml(src){
+    src = src.replace(/\r\n?/g, '\n');
+    var lines = src.split('\n');
+    var html = '', i = 0;
+    var blockStart = /^(#{1,6}\s|```|\s*>|\s*[-*+]\s|\s*\d+\.\s)/;
+    while (i < lines.length) {
+      var line = lines[i];
+      if (/^\s*$/.test(line)) { i++; continue; }
+
+      if (/^\s*```/.test(line)) {
+        i++; var code = '';
+        while (i < lines.length && !/^\s*```/.test(lines[i])) { code += lines[i] + '\n'; i++; }
+        i++;
+        html += '<pre><code>' + esc(code.replace(/\n$/,'')) + '</code></pre>';
+        continue;
+      }
+      var h = line.match(/^(#{1,6})\s+(.*)$/);
+      if (h) { var n = h[1].length; html += '<h'+n+'>' + inline(h[2]) + '</h'+n+'>'; i++; continue; }
+
+      if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) { html += '<hr>'; i++; continue; }
+
+      if (/^\s*>/.test(line)) {
+        var q = '';
+        while (i < lines.length && /^\s*>/.test(lines[i])) { q += lines[i].replace(/^\s*>\s?/,'') + '\n'; i++; }
+        html += '<blockquote>' + mdToHtml(q) + '</blockquote>';
+        continue;
+      }
+      if (/^\s*[-*+]\s+/.test(line)) {
+        html += '<ul>';
+        while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
+          html += '<li>' + inline(lines[i].replace(/^\s*[-*+]\s+/,'')) + '</li>'; i++;
+        }
+        html += '</ul>'; continue;
+      }
+      if (/^\s*\d+\.\s+/.test(line)) {
+        html += '<ol>';
+        while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
+          html += '<li>' + inline(lines[i].replace(/^\s*\d+\.\s+/,'')) + '</li>'; i++;
+        }
+        html += '</ol>'; continue;
+      }
+      var p = '';
+      while (i < lines.length && !/^\s*$/.test(lines[i]) && !blockStart.test(lines[i])) {
+        p += (p ? ' ' : '') + lines[i].trim(); i++;
+      }
+      html += '<p>' + inline(p) + '</p>';
+    }
+    return html;
+  }
+
+  // ---------- Library ----------
+  picker.addEventListener('change', function (e) {
+    var picked = Array.prototype.slice.call(e.target.files || []);
+    files = picked
+      .filter(function (f) { return /\.(md|markdown|txt)$/i.test(f.name); })
+      .map(function (f) {
+        return { file: f, name: f.name, path: f.webkitRelativePath || f.name };
+      })
+      .sort(function (a, b) { return a.path.localeCompare(b.path); });
+    renderList();
+  });
+
+  function renderList(){
+    fileList.innerHTML = '';
+    if (!files.length) {
+      fileList.innerHTML = '<div class="empty">No markdown files found in that folder.</div>';
+      return;
+    }
+    files.forEach(function (entry, idx) {
+      var div = document.createElement('div');
+      div.className = 'file';
+      var sub = entry.path.replace(/[^/]+$/, '').replace(/\/$/, '');
+      div.innerHTML = '<div class="name">' + esc(entry.name.replace(/\.(md|markdown|txt)$/i,'')) +
+                      '</div>' + (sub ? '<div class="path">' + esc(sub) + '</div>' : '');
+      div.addEventListener('click', function () { open(idx); });
+      fileList.appendChild(div);
+    });
+  }
+
+  // ---------- Reader ----------
+  function open(idx){
+    var entry = files[idx];
+    openFile = entry;
+    docTitle.textContent = entry.name.replace(/\.(md|markdown|txt)$/i,'');
+    entry.file.text().then(function (text) {
+      var isMd = /\.(md|markdown)$/i.test(entry.name);
+      book.innerHTML = isMd ? mdToHtml(text) : '<pre><code>' + esc(text) + '</code></pre>';
+      library.classList.add('hidden');
+      reader.classList.add('active');
+      page = 0;
+      // paginate now, and again once fonts settle (metrics change layout)
+      paginate();
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () { paginate(); });
+      }
+      setTimeout(paginate, 60);
+    });
+  }
+
+  function paginate(){
+    var W = window.innerWidth;
+    var H = window.innerHeight;
+    var sideM = Math.max(20, Math.round(W * 0.06));
+    var topM  = 46;
+    var botM  = 40;
+
+    book.style.transition = 'none';
+    book.style.top    = topM + 'px';
+    book.style.height = (H - topM - botM) + 'px';
+    book.style.columnWidth = (W - 2 * sideM) + 'px';
+    book.style.columnGap   = (2 * sideM) + 'px';
+    book.style.paddingLeft = sideM + 'px';
+
+    stepW = W;
+    // force reflow then measure
+    var sw = book.scrollWidth;
+    totalPages = Math.max(1, Math.ceil(sw / W));
+    if (page > totalPages - 1) page = totalPages - 1;
+    if (page < 0) page = 0;
+    applyPage(false);
+    // restore transition next frame
+    requestAnimationFrame(function () { book.style.transition = ''; });
+  }
+
+  function applyPage(animate){
+    if (!animate) book.style.transition = 'none';
+    book.style.transform = 'translateX(' + (-page * stepW) + 'px)';
+    pageno.textContent = (page + 1) + ' / ' + totalPages;
+    if (!animate) requestAnimationFrame(function () { book.style.transition = ''; });
+  }
+
+  function next(){ if (page < totalPages - 1) { page++; applyPage(true); } }
+  function prev(){ if (page > 0) { page--; applyPage(true); } }
+
+  function closeReader(){
+    reader.classList.remove('active');
+    library.classList.remove('hidden');
+    book.innerHTML = '';
+    openFile = null;
+  }
+  backBtn.addEventListener('click', closeReader);
+
+  // ---------- Gestures ----------
+  var sx = 0, sy = 0;
+  reader.addEventListener('touchstart', function (e) {
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+  }, { passive: true });
+
+  reader.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - sx;
+    var dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) next(); else prev();
+    } else if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
+      // tap: right half forward, left half back
+      if (sx > window.innerWidth * 0.5) next(); else prev();
+    }
+  }, { passive: true });
+
+  // keyboard (desktop testing)
+  window.addEventListener('keydown', function (e) {
+    if (!reader.classList.contains('active')) return;
+    if (e.key === 'ArrowRight' || e.key === ' ') { next(); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { prev(); e.preventDefault(); }
+    else if (e.key === 'Escape') closeReader();
+  });
+
+  var rt;
+  window.addEventListener('resize', function () {
+    if (!reader.classList.contains('active')) return;
+    clearTimeout(rt);
+    rt = setTimeout(paginate, 120);
+  });
+
+  // Register service worker (only over http/https; silently skipped on file://)
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+  }
+})();
+</script>
+</body>
+</html>

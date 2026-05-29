@@ -1,0 +1,19 @@
+{
+  "name": "Monasterium",
+  "short_name": "Monasterium",
+  "description": "A paged reader for markdown documents.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#130722",
+  "theme_color": "#130722",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
